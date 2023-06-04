@@ -1,10 +1,11 @@
 package com.javarush.jira.profile.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javarush.jira.AbstractControllerTest;
-import com.javarush.jira.login.internal.UserRepository;
+import com.javarush.jira.common.util.JsonUtil;
 import com.javarush.jira.profile.ProfileTo;
+import com.javarush.jira.profile.internal.Profile;
 import com.javarush.jira.profile.internal.ProfileMapper;
+import com.javarush.jira.profile.internal.ProfileRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,7 +13,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.javarush.jira.login.internal.web.UserTestData.ADMIN_MAIL;
-import static com.javarush.jira.profile.web.ProfileTestData.*;
+import static com.javarush.jira.profile.web.ProfileTestData.ADMIN_ID;
+import static com.javarush.jira.profile.web.ProfileTestData.getUpdated;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -25,7 +27,7 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
     @Autowired
     ProfileMapper mapper;
     @Autowired
-    private UserRepository repository;
+    private ProfileRepository repository;
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
@@ -38,24 +40,19 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
 
 
     @Test
-    @WithUserDetails(value = GUEST_MAIL)
+    @WithUserDetails(value = ADMIN_MAIL)
      void update() throws Exception {
+    ProfileTo updatedTo = mapper.toTo(getUpdated());
 
-    ObjectMapper mapper = new ObjectMapper();
 
-
-    ProfileTo beforeUpdated = ProfileTestData.getNew();
-    ProfileTo updatedTo = ProfileTestData.getUpdated();
-
-    String json = mapper.writeValueAsString(beforeUpdated);
     perform(MockMvcRequestBuilders.put(ProfileRestController.REST_URL)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(json))
+            .content(JsonUtil.writeValue(updatedTo))
+            .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isNoContent());
-
-    assertEquals(beforeUpdated.getId(), updatedTo.getId(), "user's id must not be changed");
-    assertNotEquals(beforeUpdated.getMailNotifications().size(), updatedTo.getMailNotifications().size());
+    Profile afterUpdated = repository.getExisted(ADMIN_ID);
+    assertEquals(updatedTo.getId(),afterUpdated.getId(), "user's id must not be changed");
+    assertNotEquals(updatedTo.getMailNotifications(), afterUpdated.getMailNotifications());
 }
 
 }
