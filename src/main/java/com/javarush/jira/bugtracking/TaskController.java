@@ -20,4 +20,13 @@ public class TaskController {
     public void addTagsToTask(@PathVariable Long taskId, @RequestBody Set<String> tags) {
         taskService.addTagsToTask(taskId, tags);
     }
+
+
+//    @PutMapping("/users/{userId}/tasks/{taskId}/status")
+//    public void updateUserTaskStatus(@PathVariable Long userId, @PathVariable Long taskId, @RequestParam String statusCode) {
+//        taskService.updateUserTaskStatus(userId, taskId, statusCode);
+//    }
+
+
+
 }

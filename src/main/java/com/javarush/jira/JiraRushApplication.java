@@ -12,6 +12,12 @@ import org.springframework.cache.annotation.EnableCaching;
 public class JiraRushApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(JiraRushApplication.class, args);
+
+        try {
+            SpringApplication.run(JiraRushApplication.class, args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 }

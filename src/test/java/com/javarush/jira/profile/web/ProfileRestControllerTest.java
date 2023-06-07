@@ -37,14 +37,10 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(2)));
     }
-
-
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
      void update() throws Exception {
     ProfileTo updatedTo = mapper.toTo(getUpdated());
-
-
     perform(MockMvcRequestBuilders.put(ProfileRestController.REST_URL)
             .content(JsonUtil.writeValue(updatedTo))
             .contentType(MediaType.APPLICATION_JSON))
@@ -53,6 +49,5 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
     Profile afterUpdated = repository.getExisted(ADMIN_ID);
     assertEquals(updatedTo.getId(),afterUpdated.getId(), "user's id must not be changed");
     assertNotEquals(updatedTo.getMailNotifications(), afterUpdated.getMailNotifications());
-}
-
+    }
 }
