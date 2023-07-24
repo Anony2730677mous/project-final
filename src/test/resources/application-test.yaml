@@ -1,5 +1,64 @@
 spring.cache.type: none
+
 spring:
   sql:
     init:
       mode: always
+  datasource:
+    url: jdbc:h2:mem:mydb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;NON_KEYWORDS=VALUE;
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+    jpa:
+      spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+      defer-datasource-initialization: true
+      hibernate:
+        ddl-auto: validate
+  h2:
+    console:
+      enabled: true
+      console.settings.trace: true
+    initialization-mode: create
+
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
+            scope:
+              - email
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+  gitlab:
+    client-id: ${GITLAB_CLIENT_ID}
+    client-secret: ${GITLAB_CLIENT_SECRET}
+    client-name: GitLab
+    redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+    authorization-grant-type: authorization_code
+    scope: read_user
+    provider:
+      gitlab:
+        authorization-uri: https://gitlab.com/oauth/authorize
+        token-uri: https://gitlab.com/oauth/token
+        user-info-uri: https://gitlab.com/api/v4/user
+        user-name-attribute: email
+  mail:
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+    host: smtp.gmail.com
+    port: 587
+    username: jira4jr@gmail.com
+    password: zdfzsrqvgimldzyj
+  liquibase:
+    enabled: true
+    changeLog: "classpath:db/test.sql"

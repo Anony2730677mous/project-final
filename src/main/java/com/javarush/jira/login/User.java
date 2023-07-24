@@ -3,6 +3,7 @@ package com.javarush.jira.login;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.javarush.jira.bugtracking.internal.model.Task;
 import com.javarush.jira.common.HasIdAndEmail;
 import com.javarush.jira.common.model.TimestampEntry;
 import com.javarush.jira.common.util.validation.NoHtml;
@@ -122,4 +123,9 @@ public class User extends TimestampEntry implements HasIdAndEmail, Serializable 
     public boolean hasRole(Role role) {
         return roles != null && roles.contains(role);
     }
+
+
+
+    @ManyToMany(mappedBy = "users")
+    private Set<Task> tasks;
 }

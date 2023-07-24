@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS TASK_TAGS;
 DROP TABLE IF EXISTS USER_BELONG;
 DROP TABLE IF EXISTS ACTIVITY;
 DROP TABLE IF EXISTS TASK;
+DROP TABLE IF EXISTS TASK_USER;
 DROP TABLE IF EXISTS SPRINT;
 DROP TABLE IF EXISTS PROJECT;
 DROP TABLE IF EXISTS REFERENCE;
@@ -173,6 +174,14 @@ create table USER_ROLE
     ROLE    smallint not null,
     constraint UK_USER_ROLE unique (USER_ID, ROLE),
     constraint FK_USER_ROLE foreign key (USER_ID) references USERS (ID) on delete cascade
+);
+--changeset jirarush:create_task_user_table
+CREATE TABLE TASK_USER
+(
+     ID bigserial primary key,
+     TASK_ID bigint not null,
+     USER_ID bigint not null,
+     STATUS_CODE varchar(32) not null
 );
 
 --changeset kmpk:populate_data
